@@ -1,2 +1,2 @@
-# advent-of-code-2022
-Solutions to 2022 AOC puzzles.
+# Advent of Code 2022
+Solutions to [2022 AOC puzzles](https://adventofcode.com/2022).
