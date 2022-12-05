@@ -1,6 +1,16 @@
 # Solution to day 5 of AOC 2022,
 # https://adventofcode.com/2022/day/5
 
+import copy
+
+
+def top_crates(stacks: list) -> str:
+    top = ''
+    for st in stacks:
+        top += st[-1]
+    return top
+
+
 f = open('input.txt')
 t = f.read()
 f.close()
@@ -13,7 +23,6 @@ for l in reversed(raw_stacks.split('\n')):
     if first_row:
         for i in l.split('   '):
             stacks1.append([])
-            # print('a')
         first_row = False
     else:
         stack = 0
@@ -23,18 +32,19 @@ for l in reversed(raw_stacks.split('\n')):
                 stack_no = (i - 1) // 4
                 stacks1[stack_no].append(crate)
 
-print(stacks1)
-
+stacks2 = copy.deepcopy(stacks1)
 
 for m in raw_moves.split('\n'):
     _, how_many, _, from_stack, _, to_stack = m.split(' ')
-    print(how_many, from_stack, to_stack)
+
+    crates = []
     for i in range(int(how_many)):
         crate = stacks1[int(from_stack) - 1].pop()
         stacks1[int(to_stack) - 1].append(crate)
+        crate = stacks2[int(from_stack) - 1].pop()
+        crates.append(crate)
+    crates.reverse()
+    stacks2[int(to_stack) - 1] = stacks2[int(to_stack) - 1] + crates
 
-print(stacks1)
-
-for s in stacks1:
-    print(s[-1], end='')
-print()
+print('Part 1: ' + top_crates(stacks1))
+print('Part 2: ' + top_crates(stacks2))
