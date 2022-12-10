@@ -53,22 +53,26 @@ assert knot_move(2, 1, 1, 3) == (2, 2)
 assert knot_move(3, 2, 1, 3) == (2, 2)
 
 
-f = open('test.txt')
+f = open('input.txt')
 t = f.read()
 f.close()
 
-hx, hy, tx, ty = 0, 0, 0, 0
+# hx, hy, tx, ty = 0, 0, 0, 0
 
-length = 2
+length = 10
+rope = [(0, 0)] * length
+print(rope)
 
-tail_visits1, tail_visits2 = set(), set()
-tail_visits1.add((tx, ty))
+tail_visits = set()
+tail_visits.add(rope[length - 1])
 for motion in t.split('\n'):
     direction, raw_steps = motion.split(' ')
     steps = int(raw_steps)
     print(direction, steps)
 
     for i in range(steps):
+        # Move the head.
+        hx, hy = rope[0]
         if direction == 'U':
             hy -= 1
         elif direction == 'D':
@@ -77,8 +81,15 @@ for motion in t.split('\n'):
             hx += 1
         else:
             hx -= 1
-        tx, ty = knot_move(hx, hy, tx, ty)
-        tail_visits1.add((tx, ty))
+        rope[0] = (hx, hy)
 
-print('Part 1:', len(tail_visits1))
-print('Part 2:', len(tail_visits2))
+        # Move each of the other (non-head) knots.
+        for k in range(1, length):
+            ax, ay = rope[k -1]
+            bx, by = rope[k]
+
+            rope[k] = knot_move(ax, ay, bx, by)
+
+        tail_visits.add(rope[length - 1])
+
+print(len(tail_visits))
