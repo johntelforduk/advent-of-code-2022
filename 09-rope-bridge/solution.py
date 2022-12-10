@@ -1,6 +1,9 @@
 # Solution to day 9 of AOC 2022,
 # https://adventofcode.com/2022/day/9
 
+import pygame
+
+
 def touching(hx: int, hy: int, tx: int, ty: int) -> bool:
     for dx in [-1, 0, 1]:
         for dy in [-1, 0, 1]:
@@ -93,3 +96,37 @@ for motion in t.split('\n'):
         tail_visits.add(rope[length - 1])
 
 print(len(tail_visits))
+
+
+lx, ly, mx, my = 0, 0, 0, 0
+for x, y in tail_visits:
+    lx = min(lx, x)
+    ly = min(ly, y)
+    mx = max(mx, x)
+    my = max(my, y)
+
+width, height = mx - lx, my - ly
+
+print(lx, ly, mx, my, width, height)
+scale = 2
+
+pygame.init()                                               # Initialize the game engine.
+
+screen_size = [scale * (width + 1) + 10, scale * (height + 1) + 10]  # [width, height]
+screen = pygame.display.set_mode(screen_size)
+
+black = (0, 0, 0)  # Black.
+white = (255, 255, 255)  # White
+
+screen.fill(white)
+
+for x, y in tail_visits:
+    render_x = (x - lx)
+    render_y = (y - ly)
+    screen.fill(color=black, rect=[5 + render_x * scale, 5 + render_y * scale, scale, scale])
+
+# screen.fill(color=off_colour, rect=[10,10,2, 2])
+
+screenshot_name = 'd9_' + str(length) + '.png'
+pygame.image.save(screen, screenshot_name)
+pygame.display.flip()
