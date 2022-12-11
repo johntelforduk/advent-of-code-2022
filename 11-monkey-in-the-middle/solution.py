@@ -57,7 +57,8 @@ def turn(ml: list, mn: int):
         monkey.inspections += 1
 
         old = monkey.items.pop(0)
-        new = eval(monkey.operation) // 3
+        # new = eval(monkey.operation) // 3                 # Part 1
+        new = eval(monkey.operation) % COMMON_FACTOR        # Part 2
 
         if (new % monkey.divisor) == 0:
             ml[monkey.true_throw].items.append(new)
@@ -67,7 +68,7 @@ def turn(ml: list, mn: int):
 
 def print_monkeys(ml: list):
     for monkey in ml:
-        print('Monkey', monkey.number, monkey.items)
+        print('Monkey', monkey.number, 'Inspections', monkey.inspections, monkey.items)
 
 
 f = open('input.txt')
@@ -78,7 +79,12 @@ monkeys = []
 for monkey_text in t.split('\n\n'):
     monkeys.append(Monkey(definition=monkey_text))
 
-for r in range(1, 21):
+COMMON_FACTOR = 1
+for m in monkeys:
+    COMMON_FACTOR *= m.divisor
+print(COMMON_FACTOR)
+
+for r in range(1, 10001):
     for m_num in range(len(monkeys)):
         turn(ml=monkeys, mn=m_num)
 
@@ -90,4 +96,4 @@ for m in monkeys:
     inspection_list.append(m.inspections)
 
 t1, t2 = sorted(inspection_list, reverse=True)[0: 2]
-print('Part 1:', t1 * t2)
+print(t1 * t2)
