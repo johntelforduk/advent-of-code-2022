@@ -3,6 +3,7 @@ Solutions to [2022 AOC puzzles](https://adventofcode.com/2022).
 
 ### Installation
 ```commandline
+pip install structlog
 pip install matplotlib
 pip install pygame
 ```
