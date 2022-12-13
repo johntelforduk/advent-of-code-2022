@@ -20,3 +20,8 @@ Visualisation of part 1.
 Visualisation of part 2.
 
 ![Day 9, part 1](./09-rope-bridge/d9_10.png)
+
+### Day 12: Hill Climbing Algorithm
+Visualisation of the terrain.
+
+![Day 12](./12-hill-climbing-algorithm/d12.png)

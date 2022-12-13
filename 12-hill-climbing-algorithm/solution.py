@@ -3,6 +3,10 @@
 
 import sys
 import structlog
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator
+import numpy as np
 
 structlog.configure(
     processors=[
@@ -28,9 +32,11 @@ f.close()
 
 grid, source, target = {}, (0, 0), (0, 0)
 
+z = []
 grid_x, grid_y = 0, 0
 for row in t.split('\n'):
     grid_x = 0
+    x_list = []
     for elevation in row:
         if elevation == 'S':
             grid[grid_x, grid_y] = 'a'
@@ -41,18 +47,53 @@ for row in t.split('\n'):
         else:
             grid[grid_x, grid_y] = elevation
 
+        x_list.append(ord(grid[grid_x, grid_y]) - ord('a') + 1)
         grid_x += 1
     grid_y += 1
+    z.append(x_list)
+
+print(z)
 
 # Fix a gatepost error.
-grid_x -= 1
-grid_y -= 1
+# grid_x -= 1
+# grid_y -= 1
 
 log.info('Grid loaded',
          grid_x=grid_x,
          grid_y=grid_y,
          source=source,
          target=target)
+
+fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+# Make data.
+X = np.arange(0, grid_x)
+Y = np.arange(0, grid_y)
+X, Y = np.meshgrid(X, Y)
+# R = np.sqrt(X**2 + Y**2)
+
+# z = [[1, 2, 1], [4, 5, 6], [7, 8, 9]]
+Z = np.array(z)
+# Z = np.append(values=z, axis=0)
+print(Z)
+
+
+# Plot the surface.
+surf = ax.plot_surface(X, Y, Z, cmap=cm.summer,
+                       linewidth=0, antialiased=False)
+
+# Customize the z axis.
+ax.set_zlim(0, 26)
+# ax.zaxis.set_major_locator(LinearLocator(10))
+# A StrMethodFormatter is used automatically
+# ax.zaxis.set_major_formatter('{x:.02f}')
+
+# Add a color bar which maps values to colors.
+# fig.colorbar(surf, shrink=0.5, aspect=5)
+
+plt.show()
+
+
 
 
 # Implemented pseudo code from, https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
