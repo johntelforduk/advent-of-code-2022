@@ -75,11 +75,11 @@ q[source] = 0
 # while Q is not empty:
 while len(q) != 0:
 
-    print('len(q):', len(q), q)
+    print('len(q):', len(q))
     # u ← vertex in Q with min dist[u]
     u = min(q, key=q.get)
 
-    print('u, q[u]:', u, q[u])
+    # print('u, q[u]:', u, q[u])
 
     # remove u from Q
     del q[u]
@@ -92,11 +92,11 @@ while len(q) != 0:
         if v in grid:
             elevation = ord(grid[v]) - ord(grid[u])
             climbable = (elevation <= 1)
-            print(v, elevation)
+            # print(v, elevation)
 
         # TODO v in q yes... but also, is there a path from u to v.
         if v in q and climbable:
-            print('v:', v)
+            # print('v:', v)
 
             # print(v)
             # alt ← dist[u] + length(u, v)
