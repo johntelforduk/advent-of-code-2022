@@ -80,10 +80,11 @@ print(Z)
 
 # Plot the surface.
 surf = ax.plot_surface(X, Y, Z, cmap=cm.summer,
-                       linewidth=0, antialiased=False)
+                       linewidth=1, antialiased=False)
 
 # Customize the z axis.
 ax.set_zlim(0, 26)
+ax.set_aspect('equal')
 # ax.zaxis.set_major_locator(LinearLocator(10))
 # A StrMethodFormatter is used automatically
 # ax.zaxis.set_major_formatter('{x:.02f}')
