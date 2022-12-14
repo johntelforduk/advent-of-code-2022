@@ -68,6 +68,21 @@ def check_order(p1, p2) -> str:
         return check_order(p1, p2)
 
 
+def lowest(p: list) -> (list, list):
+    """For parm list of lists, return lowest list, and remainder of parm list."""
+    if len(p) == 1:
+        return p[0], []
+
+    p = p.copy()
+    best = p[0]
+    for i in range(1, len(p)):
+        if check_order(best, p[i]) == "wrong":
+            best = p[i]
+
+    p.remove(best)
+    return best, p
+
+
 assert check_order([1,1,3,1,1], [1,1,5,1,1]) == "right"
 assert check_order([[1],[2,3,4]],  [[1],4]) == "right"
 assert check_order([9], [[8,7,6]]) == "wrong"
@@ -83,11 +98,15 @@ f.close()
 
 part1 = 0
 index = 1
+d1, d2 = [[2]], [[6]]
+packets = [d1, d2]
 for pair in t.split('\n\n'):
     # print(pair)
 
     s1, s2 = pair.split('\n')
     l1, l2 = eval(s1), eval(s2)
+    packets.append(l1)
+    packets.append(l2)
 
     check = check_order(l1, l2)
     print(l1, l2, check)
@@ -97,4 +116,14 @@ for pair in t.split('\n\n'):
 
     index += 1
 
-print(part1)
+
+print(packets)
+sorted_packets = []
+while len(packets) > 0:
+    this_lowest, packets = lowest(packets)
+    sorted_packets.append(this_lowest)
+
+i1, i2 = sorted_packets.index(d1) + 1, sorted_packets.index(d2) + 1
+
+print('Part 1:', part1)
+print('Part 2:', i1 * i2)
