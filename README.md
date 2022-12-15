@@ -25,3 +25,12 @@ Visualisation of part 2.
 Visualisation of the terrain.
 
 ![Day 12](./12-hill-climbing-algorithm/d12.png)
+
+### Day 14: Regolith Reservoir
+Visualisation of part 1.
+
+![Day 14, part 1](./14-regolith-reservoir/d14_1.png)
+
+Visualisation of part 2.
+
+![Day 14, part 2](./14-regolith-reservoir/d14_2.png)
