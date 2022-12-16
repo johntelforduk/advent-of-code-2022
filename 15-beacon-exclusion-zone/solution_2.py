@@ -25,8 +25,8 @@ t = f.read()
 f.close()
 
 
-def manhatten(x1: int, y1: int, x2: int, y2: int) -> int:
-    """For parm pair of coordinates, return the Manhatten distance between them."""
+def manhattan(x1: int, y1: int, x2: int, y2: int) -> int:
+    """For parm pair of coordinates, return the Manhattan distance between them."""
     return abs(x1 - x2) + abs(y1 - y2)
 
 
@@ -72,9 +72,9 @@ def tuning_frequency(x: int, y: int) -> int:
 
 assert tuning_frequency(14, 11) == 56000011
 
-assert manhatten(0, 0, 0, 0) == 0
-assert manhatten(0, 0, 2, 2) == 4
-assert manhatten(-1, 4, 2, -7) == 14
+assert manhattan(0, 0, 0, 0) == 0
+assert manhattan(0, 0, 2, 2) == 4
+assert manhattan(-1, 4, 2, -7) == 14
 
 assert attempt_reduce(0, 2, 10, 19) == (None, None)
 assert attempt_reduce(-15, -3, 0, 12) == (None, None)
@@ -103,7 +103,7 @@ for try_y in range(4000000):
     ranges = []
 
     for sx, sy, bx, by in s_and_bs:
-        m = manhatten(sx, sy, bx, by)
+        m = manhattan(sx, sy, bx, by)
         lx, hx = cannot(sx, sy, m, try_y)
 
         if lx is not None:
