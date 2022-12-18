@@ -71,8 +71,6 @@ class Chamber:
         #          width=self.width)
         # if self.current_rock.falling:
 
-        # TODO Check that move won't cause the falling rock to hit existing rocks.
-
         if self.can_jet(direction):
             if direction == '<':
                 self.current_rock_x -= 1
