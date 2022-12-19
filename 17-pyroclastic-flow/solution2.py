@@ -1,4 +1,4 @@
-# Solution to day 17 of AOC 2022,
+# Solution to part 2 of day 17 of AOC 2022,
 # https://adventofcode.com/2022/day/17
 
 import structlog
@@ -166,29 +166,82 @@ f = open('input.txt')
 t = f.read()
 f.close()
 
-c = Chamber()
+print(10 * len(t))
 
-rock = 0
-c.add_rock(rock_type=rock)
+def find_big_top(target: int) -> int:
+    c = Chamber()
 
-i = 0
+    rock, start_rocks = 0, 0
+    c.add_rock(rock_type=rock)
 
-rocks_stopped = 0
-while rocks_stopped < 2022:
-    d = t[i]
-    i += 1
-    if i >= len(t):
-        i = 0
+    i = 0
+    total_moves = 0
 
-    c.jet(direction=d)
-    # print(d)
-    did_fall = c.fall()
-    if not did_fall:
-        rock = (rock + 1) % 5
-        c.add_rock(rock_type=rock)
-        rocks_stopped += 1
-        if rocks_stopped % 100 == 0:
-            c.render()
-            print(rocks_stopped)
+    rocks_stopped = 0
+    experiments = []
+    rocks_top = {}
 
-print(rocks_stopped, c.top)
+    while len(experiments) < 3:
+        d = t[i]
+        i += 1
+        if i >= len(t):
+            i = 0
+
+        c.jet(direction=d)
+        total_moves += 1
+        # print(d)
+        did_fall = c.fall()
+        if not did_fall:
+            rock = (rock + 1) % 5
+            c.add_rock(rock_type=rock)
+            rocks_stopped += 1
+            # few_extra += 1
+
+            # if few_extra == 1:
+            #     print(rocks_stopped, ",", abs(c.top))
+            # if rocks_stopped % 100 == 0:
+            #     # c.render()
+            #     print(rocks_stopped)
+            # print(rocks_stopped, c.top)
+
+            if len(experiments) == 2:
+                rocks_top[rocks_stopped - start_rocks] = abs(c.top) - start_top
+
+        possible = total_moves % (10 * len(t)) == 0
+        if possible:
+            # if target % abs(rocks_stopped) == 0:
+            print(rocks_stopped, ',', abs(c.top))
+            experiments.append((rocks_stopped, abs(c.top)))
+            if len(experiments) == 2:
+                start_rocks = rocks_stopped
+                start_top = abs(c.top)
+
+    lr, lt = experiments[1]
+    hr, ht = experiments[2]
+
+    try_it, base = 0, target
+    while try_it == 0:
+        base -= 1
+        try_it = prediction(lr, hr, lt, ht, base)
+        print('target, try_it:', base, try_it)
+
+    print('rocks_top:', rocks_top)
+
+    shortfall = target - base
+    print('shortfall:', shortfall)
+
+    return try_it + rocks_top[shortfall]
+
+
+def prediction(low_rocks, high_rocks, low_top, high_top, x) -> int:
+    gradient = (high_top - low_top) / (high_rocks - low_rocks)
+    pred = low_top + gradient * (x - low_rocks)
+    if pred.is_integer():
+        return int(pred)
+    return 0
+
+
+# c.render()
+# print(rocks_stopped, c.top)#
+
+print(find_big_top(1000000000000))
