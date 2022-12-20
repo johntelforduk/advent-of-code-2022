@@ -3,6 +3,10 @@
 
 import structlog
 from itertools import combinations
+from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+import numpy as np
+
 
 structlog.configure(
     processors=[
@@ -88,6 +92,43 @@ def approx_surface_area(cs: set) -> int:
             touchers += 1
     return len(cs) * 6 - 2 * touchers
 
+
+def plot(cs_out: set, cs_in):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Vertices of a cube.
+    # ax.scatter3D(v[:, 0], v[:, 1], v[:, 2])
+    colours = ['black', 'white']
+    alphas = [0.03, 1]
+    pair = [cs_out, cs_in]
+    i = 0
+    for cs in pair:
+        for x, y, z in cs:
+            v = np.array([[x, y, z], [x + 1, y, z], [x + 1, y + 1, z], [x, y + 1, z],
+                          [x, y, z + 1], [x + 1, y, z + 1], [x + 1, y + 1, z + 1], [x, y + 1, z + 1]])
+
+            ax.scatter3D(v[:, 0], v[:, 0], v[:, 0], s=0)  # Needed to set the bounds of the plotting space.
+
+            faces = [[v[0], v[1], v[2], v[3]],
+                     [v[4], v[5], v[6], v[7]],
+                     [v[1], v[5], v[6], v[2]],
+                     [v[0], v[4], v[7], v[3]],
+                     [v[3], v[2], v[6], v[7]],
+                     [v[0], v[1], v[5], v[4]]]
+
+
+            # Plot faces.
+            ax.add_collection3d(Poly3DCollection(faces,
+                                                 facecolors=colours[i], linewidths=0.1, edgecolors=colours[i], alpha=alphas[i]))
+        i += 1
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    plt.show()
+
+
 print('Part 1:', approx_surface_area(cs=cubes))
 
 min_x, max_x, min_y, max_y, min_z, max_z = 100000, -100000, 100000, -100000, 100000, -100000
@@ -115,3 +156,5 @@ print(insiders)
 print(approx_surface_area(insiders))
 
 print('Part 2:', approx_surface_area(cs=cubes) - approx_surface_area(insiders))
+
+plot(cs_out=cubes, cs_in=insiders)

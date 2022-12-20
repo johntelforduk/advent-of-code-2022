@@ -34,3 +34,10 @@ Visualisation of part 1.
 Visualisation of part 2.
 
 ![Day 14, part 2](./14-regolith-reservoir/d14_2.png)
+
+### Day 18: Boiling Boulders
+
+Visualistion of part 2.
+
+![Day 18, part 2](./18-boiling-boulders/d18_2.png)
+
