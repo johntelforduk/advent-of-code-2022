@@ -63,6 +63,7 @@ class Factory:
         self.resources = {'ore': 0, 'clay': 0, 'obsidian': 0, 'geode': 0}
 
         self.minute = 0
+        self.max_geodes = 0
 
         log.info('Factory created',
                  costs=self.costs,
@@ -152,8 +153,10 @@ def another_minute(factory: Factory):
 
 
     if factory.minute == 24:
-        if factory.resources['geode'] > 0:
-            print(factory.minute, factory.resources)
+        factory.max_geodes = max(factory.max_geodes, factory.resources['geode'])
+        # if factory.resources['geode'] > 0:
+            # print(factory.minute, factory.resources)
+            # print(factory.resources['geode'])
         return
 
     factory.minute += 1
@@ -162,18 +165,30 @@ def another_minute(factory: Factory):
         new_factory = copy.deepcopy(factory)
         new_factory.make_a_robot(robot_type=robot_type)
         another_minute(factory=new_factory)
+        if new_factory.max_geodes > factory.max_geodes:
+            factory.max_geodes = new_factory.max_geodes
 
-f = open('test1.txt')
+
+f = open('input.txt')
 t = f.read()
 f.close()
 
+part1 = 0
 for line in t.split('\n'):
     print(line)
 
     bests_resources = {}
     bests_robots = {}
+    # geodes = 0
     start_factory = Factory(blueprint=line)
     another_minute(factory=start_factory)
+
+    print(start_factory.max_geodes)
+    part1 += start_factory.blueprint_num * start_factory.max_geodes
+
+print(part1)
+
+
 
     #
     #
