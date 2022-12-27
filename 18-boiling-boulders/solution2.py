@@ -99,7 +99,7 @@ def plot(cs_out: set, cs_in):
 
     # Vertices of a cube.
     # ax.scatter3D(v[:, 0], v[:, 1], v[:, 2])
-    colours = ['black', 'white']
+    colours = ['darkseagreen', 'orchid']
     alphas = [0.03, 1]
     pair = [cs_out, cs_in]
     i = 0
