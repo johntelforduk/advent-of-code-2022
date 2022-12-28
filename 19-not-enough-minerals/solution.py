@@ -116,8 +116,8 @@ class Factory:
                 self.robots['ore'],
                 self.robots['clay'],
                 self.robots['obsidian'],
-                self.robots['geode'],
-                self.minute)
+                self.robots['geode'])
+                # self.minute)
 
 
     def render(self):
