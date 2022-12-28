@@ -124,9 +124,14 @@ class Factory:
         """Print out status of current this factory."""
         print('Blueprint:', self.blueprint_num, ' Resources:', self.resources, ' Robots:', self.robots)
 
+    # def potential(self):
+    #     minutes_left = 1 + 24 - self.minute
+    #     return self.robots['obsidian'] * minutes_left + sum_ints_lt(minutes_left)
+
     def potential(self):
         minutes_left = 1 + 24 - self.minute
-        return self.robots['obsidian'] * minutes_left + sum_ints_lt(minutes_left)
+        return self.resources['geode'] + self.robots['geode'] * minutes_left + sum_ints_lt(minutes_left)
+
 
 def best(factory: Factory):
     # if factory.minute not in explored:
@@ -244,6 +249,11 @@ def dfs(current_visited, current_factory):
     current_factory.minute += 1
     if current_factory.minute > 24:
         return
+
+    if BEST_GEODES > current_factory.potential():
+        # print('.', end='')
+        return
+
 
     hash_code = current_factory.hash()
     if hash_code in current_visited:
