@@ -108,7 +108,17 @@ class Factory:
             self.robots[robot_type] += 1
 
     def hash(self):
-        return hash(frozenset(self.resources.items())) + 147 * hash(frozenset(self.robots.items()))
+        # return hash(frozenset(self.resources.items())) + 147 * hash(frozenset(self.robots.items()))
+        return (self.resources['ore'],
+                self.resources['clay'],
+                self.resources['obsidian'],
+                self.resources['geode'],
+                self.robots['ore'],
+                self.robots['clay'],
+                self.robots['obsidian'],
+                self.robots['geode'],
+                self.minute)
+
 
     def render(self):
         """Print out status of current this factory."""
@@ -222,9 +232,9 @@ def dfs(current_visited, current_factory):
     # if current_factory.minute == 23 and current_factory.robots['geode'] == 0:
     #     return
 
-    if BEST_GEODES > current_factory.potential():
-        # print('.', end='')
-        return
+    # if BEST_GEODES > current_factory.potential():
+    #     # print('.', end='')
+    #     return
 
     if current_factory.resources['geode'] > BEST_GEODES:
         current_factory.render()
