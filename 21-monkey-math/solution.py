@@ -21,6 +21,7 @@ def add_val_to_dict_list(d: dict, k: str, v: str):
     else:
         d[k] = d[k].append(v)
 
+
 def contains_lower(s: str) -> bool:
     for c in s:
         if c.islower():
