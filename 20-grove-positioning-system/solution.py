@@ -1,11 +1,6 @@
 # Solution to day 20 of AOC 2022,
 # https://adventofcode.com/2022/day/20
 
-f = open('input.txt')
-t = f.read()
-f.close()
-
-
 def singly_linked_list(start: list) -> dict:
     linked_list, prev = {}, None
     for i in start:
@@ -32,6 +27,11 @@ class Circle:
         for i in backwards:
             b = backwards[i]
             f = forwards[i]
+
+            num, _ = i
+            if num == 0:
+                self.zero = i
+
             self.graph[i] = (b, f)
 
     def render(self):
@@ -78,15 +78,28 @@ class Circle:
         self.graph[sp1] = (sm1, sp1_f)
 
     def after_zero(self, n: int) -> int:
-        current = 0
+        current = self.zero
         for i in range(n):
             _, current = self.graph[current]
-        return current
+        num, _ = current
+        return num
 
 
-encrypted = [int(line) for line in t.split('\n')]
+f = open('input.txt')
+t = f.read()
+f.close()
+
+encrypted = []
+position = 0
+for line in t.split('\n'):
+    encrypted.append((int(line), position))
+    position += 1
+
+# encrypted = [int(line) for line in t.split('\n')]
+
 print(encrypted)
 circle = Circle(start=encrypted)
+
 # circle.render()
 
 unique = set()
@@ -94,16 +107,18 @@ for i in encrypted:
     if i in unique:
         print(i)
     unique.add(i)
-    for j in range(abs(i)):
-        if i > 0:
+
+    num, _ = i
+    for j in range(abs(num)):
+        if num > 0:
             circle.move_forwards(i)
         else:
             circle.move_backwards(i)
 
-print(len(unique))
+print('len(unique):', len(unique))
 
 # circle.render()
-print(circle.after_zero(n=1000) + circle.after_zero(n=2000) + circle.after_zero(n=3000))
+print('Part 1:', circle.after_zero(n=1000) + circle.after_zero(n=2000) + circle.after_zero(n=3000))
 
 
 
