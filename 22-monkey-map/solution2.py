@@ -55,10 +55,10 @@ class Board:
         # Value = symbol for direction that we were facing when we left those coordinates.
         self.path = {}
 
+        # Net for test data.
         self.net = {(2, 1, 0): (3, 2, 1, 'x = -y'),
                     (2, 2, 1): (0, 1, 3, 'x = -x'),
                     (1, 1, 3): (2, 0, 0, 'y = +x')}
-
 
     def counterclockwise(self):
         self.facing = (self.facing - 1) % 4
@@ -99,8 +99,7 @@ class Board:
         cf_x, cf_y = self.current_face()
         nf_x, nf_y, nf_f, formula = self.net[cf_x, cf_y, self.facing]
 
-
-        print(nf_x, nf_y, nf_f, formula)
+        # print(nf_x, nf_y, nf_f, formula)
 
         # Formula is like, "x = -y"
         right_side = formula.split(' = ')[1]
@@ -127,77 +126,27 @@ class Board:
             else:
                 offset = cf_by - self.y
 
-        # cf_x_offset = self.x - cf_lx
-        # cf_y_offset = self.y - cf_ty
-
         if nf_f == 0:
-            # if sign == '+':
-            #     y = nf_ty + cf_x_offset
-            # else:
-            #     assert sign == '-'
-            #     y = nf_by - cf_x_offset
             y = nf_ty + offset
-
             return nf_lx, y, nf_f
 
         elif nf_f == 1:
-            # if sign == '+':
-            #     # XXXXX
-            #     x = nf_lx + cf_y_offset
-            # else:
-            #     assert sign == '-'
-            #     # XXXXX
-            #     x = nf_rx - cf_y_offset
-
-            # print(x, nf_ty, self.grid[x, nf_ty])
             x = nf_lx + offset
             return x, nf_ty, nf_f
 
-        elif nf_f == 3:
-            # if sign == '+':
-            #     x = nf_lx + cf_x_offset
-            # else:
-            #     assert sign == '-'
-            #     x = nf_rx - cf_x_offset
-            #     # print(nf_rx, x)
+        # XXX
+        elif nf_f == 2:
+            y = nf_ty + offset
+            return nf_rx, y, nf_f
 
+        elif nf_f == 3:
             x = nf_lx + offset
             return x, nf_by, nf_f
-
-        # elif nf_f == 2:
-        #     self.x = nf_rx
-        # else:
-        #     assert nf_f == 3
-        #     self.y = nf_by
-
-
-
-
-
-
-        # if self.current_face() == (2, 1) and self.facing_to_symbol() == '>':
-        #     self.rotate_instr('R')
-        #     _, cty, _, _ = self.face_corners(2, 1)
-        #     _, nty, nrx, _ = self.face_corners(3, 2)
-        #
-        #     self.x = nrx - self.y - cty
-        #     self.y = nty
-
-
-        # # So search in opposite direction for opposite edge of board.
-        # dx *= -1
-        # dy *= -1
-        #
-        # x, y = self.x, self.y
-        # while (x + dx, y + dy) in self.grid:
-        #     x += dx
-        #     y += dy
-        # return x, y
 
     def can_move(self) -> bool:
         """Return True if the next square that we would attempt to move into is an empty space '.'.
         Return False if it is a wall, '#'."""
-        print('next_square:', self.next_square())
+        # print('next_square:', self.next_square())
         x, y, _ = self.next_square()
         return self.grid[x, y] == '.'
 
@@ -254,15 +203,6 @@ class Board:
             else:
                 self.rotate_instr(d=next_instr)
 
-            print()
-            # self.render()
-
-
-            # print('\ncurrent_face:', self.current_face())
-            # x, y = self.current_face()
-            # print('face_corners:', self.face_corners(x, y))
-            # self.render()
-
 
 f = open('test.txt')
 t = f.read()
@@ -271,6 +211,5 @@ f.close()
 board = Board(text=t, cube_units=4)
 print(board.instructions)
 board.walk()
-# board.render()
-print(board.x, board.y, board.facing)
-print('Part 1:', 1000 * board.y + 4 * board.x + board.facing)
+print('board.x, board.y, board.facing:', board.x, board.y, board.facing)
+print('Part 2:', 1000 * board.y + 4 * board.x + board.facing)
