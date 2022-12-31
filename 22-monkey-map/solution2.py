@@ -55,10 +55,34 @@ class Board:
         # Value = symbol for direction that we were facing when we left those coordinates.
         self.path = {}
 
-        # Net for test data.
-        self.net = {(2, 1, 0): (3, 2, 1, 'x = -y'),
-                    (2, 2, 1): (0, 1, 3, 'x = -x'),
-                    (1, 1, 3): (2, 0, 0, 'y = +x')}
+        # # Net for test data.
+        # self.net = {(2, 1, 0): (3, 2, 1, 'x = -y'),
+        #             (2, 2, 1): (0, 1, 3, 'x = -x'),
+        #             (1, 1, 3): (2, 0, 0, 'y = +x')}
+
+        # Net for puzzle input.
+        # Key = (x, y, facing direction of exit), where x, y are face coordinates of face being exited.
+        # Value = (x, y, facing direction of entry, formula), where x, y, are face coordinates of being entered.
+        self.net = {(1, 1, 0): (2, 0, 3, 'x = +y'),
+                    (2, 0, 1): (1, 1, 2, 'y = +x'),
+
+                    (1, 2, 0): (2, 0, 2, 'y = -y'),
+                    (2, 0, 0): (1, 2, 2, 'y = -y'),
+
+                    (1, 1, 2): (0, 2, 1, 'x = +y'),
+                    (0, 2, 3): (1, 1, 0, 'y = +x'),
+
+                    (1, 2, 1): (0, 3, 2, 'y = +x'),
+                    (0, 3, 0): (1, 2, 3, 'x = +y'),
+
+                    (1, 0, 2): (0, 2, 0, 'y = -y'),
+                    (0, 2, 2): (1, 0, 0, 'y = -y'),
+
+                    (2, 0, 3): (0, 3, 3, 'x = +x'),
+                    (0, 3, 1): (2, 0, 1, 'x = +x'),
+
+                    (1, 0, 3): (0, 3, 0, 'y = +x'),
+                    (0, 3, 2): (1, 0, 1, 'x = +y')}
 
     def counterclockwise(self):
         self.facing = (self.facing - 1) % 4
@@ -160,8 +184,8 @@ class Board:
             assert self.grid[(self.x, self.y)] == '.'
             self.path[self.x, self.y] = self.facing_to_symbol()
 
-        print()
-        self.render()
+        # print()
+        # self.render()
 
     def current_face(self):
         """Return the (x, y) coordinates of the face we are currently standing on in the net."""
@@ -204,12 +228,17 @@ class Board:
                 self.rotate_instr(d=next_instr)
 
 
-f = open('test.txt')
+f = open('input.txt')
 t = f.read()
 f.close()
 
-board = Board(text=t, cube_units=4)
+# For test data, each edge of the cube is 4 units long.
+# board = Board(text=t, cube_units=4)
+
+board = Board(text=t, cube_units=50)
+
 print(board.instructions)
 board.walk()
+board.render()
 print('board.x, board.y, board.facing:', board.x, board.y, board.facing)
 print('Part 2:', 1000 * board.y + 4 * board.x + board.facing)
