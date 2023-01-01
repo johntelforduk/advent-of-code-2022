@@ -33,6 +33,8 @@ class Grove:
                        'S': [(0, 1), (1, 1), (-1, 1)],
                        'W': [(-1, 0), (-1, -1), (-1, 1)]}
 
+        self.some_moved = True
+
     def is_free_direction(self, x: int, y: int, d: str) -> bool:
         """Return True if all 3 places in parm direction from parm coordinates are free. Return False otherwise."""
         for dx, dy in self.deltas[d]:
@@ -44,6 +46,7 @@ class Grove:
         # Key = Coordinates of a place that at least 1 elf is thinking of moving to.
         # Value is list of elves who are thinking of moving there.
         proposals = {}
+        self.some_moved = False
 
         for x, y in self.elves:
             chosen_direction, free_directions = None, 0
@@ -56,7 +59,7 @@ class Grove:
                     free_directions += 1
                     if chosen_direction is None:
                         chosen_direction = direction
-            print(x, y, chosen_direction, free_directions)
+            # print(x, y, chosen_direction, free_directions)
 
             # "If no other Elves are in one of those eight positions, the Elf does not do anything during this round."
             if chosen_direction is not None and free_directions != 4:
@@ -68,16 +71,17 @@ class Grove:
                 else:
                     proposals[(px, py)].append((x, y))
 
-        print(proposals)
+        # print(proposals)
 
         # "Simultaneously, each Elf moves to their proposed destination tile if they were the only Elf to propose
         # moving to that position. If two or more Elves propose moving to the same position, none of those Elves move."
         for px, py in proposals:                    # 'p'roposed coordinates.
             if len(proposals[(px, py)]) == 1:       # Only 1 elf proposed moving here.
-                print(px, py)
+                # print(px, py)
                 x, y = proposals[(px, py)][0]
                 self.elves.remove((x, y))
                 self.elves.add((px, py))
+                self.some_moved = True
 
         # "Finally, at the end of the round, the first direction the Elves considered is moved to the end of the list
         # of directions."
@@ -121,3 +125,11 @@ for r in range(10):
 part1 = grove.render()
 
 print('Part 1:', part1)
+
+
+rounds = 0
+grove = Grove(raw=t)
+while grove.some_moved:
+    rounds += 1
+    grove.a_round()
+print('Part 2:', rounds)
