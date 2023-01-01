@@ -1,12 +1,16 @@
 # Solution to day 24 of AOC 2022,
 # https://adventofcode.com/2022/day/24
 
+import copy
+import json
+
+
 class Basin:
 
     def __init__(self, raw: str):
 
         # Key = (x, y) current coordinates of 1 or more blizzards.
-        # Value = list of blizzard direction of travel.
+        # Value = string of blizzard direction of travel.
         self.blizzards = {}
 
         self.lines = raw.split('\n')
@@ -15,15 +19,19 @@ class Basin:
             x = 0
             for c in row:
                 if c in '<>^v':
-                    self.blizzards[x, y] = [c]
+                    self.blizzards[x, y] = c
                 x += 1
             y += 1
 
         self.right, self.bottom = x - 2, y - 2
 
-        self.expedition = (1, 0)        # Current coordinates of the expedition.
-        self.goal = (x - 2, y - 1)      # Coordinates of the goal square.
+        self.expedition = (1, 0)        # "Your expedition begins in the only non-wall position in the top row..."
+        self.goal = (x - 2, y - 1)      # "... and needs to reach the only non-wall position in the bottom row."
         self.minute = 0
+
+    def hash_state(self):
+        return self.expedition
+
 
     def new_minute(self):
         old_blizzards = self.blizzards.copy()
@@ -47,9 +55,9 @@ class Basin:
                     new_y = self.bottom
 
                 if (new_x, new_y) in self.blizzards:
-                    self.blizzards[(new_x, new_y)].append(direction)
+                    self.blizzards[(new_x, new_y)] += direction
                 else:
-                    self.blizzards[(new_x, new_y)] = [direction]
+                    self.blizzards[(new_x, new_y)] = direction
 
         self.minute += 1
 
@@ -66,11 +74,11 @@ class Basin:
                     c = 'G'
                 else:
                     if (x, y) in self.blizzards:
-                        blizz_list = self.blizzards[(x, y)]
-                        if len(blizz_list) == 1:
-                            c = blizz_list[0]
+                        blizz_str = self.blizzards[(x, y)]
+                        if len(blizz_str) == 1:
+                            c = blizz_str
                         else:
-                            c = str(len(blizz_list))
+                            c = str(len(blizz_str))
 
                 print(c, end='')
                 x += 1
@@ -79,8 +87,62 @@ class Basin:
             y += 1
         print()
 
+    def manhattan(self):
+        x, y = self.expedition
+        return x + y
 
-f = open('test2.txt')
+    def possible_moves(self) -> list:
+        """Return a list of possible (x, y) coordinates that expedition could move to next."""
+        x, y = self.expedition
+        possible = [(x, y)]                                 # "...or you can wait in place."
+        for dx, dy in [(1, 0), (0, 1), (0, -1), (0, -1)]:   # "On each minute, you can move up, down, left, or right..."
+            px, py = x + dx, y + dy
+            if (px, py) == self.goal:
+                return[self.goal]
+
+            if (px, py) not in self.blizzards and 1 <= px <= self.right and 1 <= py <= self.bottom:
+                possible.append((x + dx, y + dy))
+        return possible
+
+
+def search(this_basin: Basin):
+    global LEAST_MINUTES
+    global PREVIOUS_STATES
+
+    # print(LEAST_MINUTES, this_basin.minute, this_basin.expedition)
+
+    if this_basin.minute + 1 >= LEAST_MINUTES:      # We've already found a quicker route, so give up.
+        return
+
+    if this_basin.minute > 900:                 # Search too long, so give up.
+        return
+
+    if this_basin.minute > 5 * this_basin.manhattan():
+        return
+
+    hash = this_basin.hash_state()
+    if hash in PREVIOUS_STATES:
+        if PREVIOUS_STATES[hash] <= this_basin.minute:
+            return
+        PREVIOUS_STATES[hash] = this_basin.minute
+
+    this_basin.new_minute()                     # Move the blizzards, and add 1 to the minute count.
+
+
+    # print(this_basin.hash_state())
+
+    if this_basin.expedition == this_basin.goal:
+        LEAST_MINUTES = this_basin.minute
+        print(LEAST_MINUTES)
+        return
+
+    for possible_expedition in this_basin.possible_moves():
+        new_basin = copy.deepcopy(this_basin)
+        new_basin.expedition = possible_expedition
+        search(this_basin=new_basin)
+
+
+f = open('input.txt')
 t = f.read()
 f.close()
 
@@ -89,17 +151,23 @@ basin = Basin(raw=t)
 # print(basin.expedition, basin.goal)
 basin.render()
 
-basin.new_minute()
-basin.render()
+LEAST_MINUTES = 9999999
+PREVIOUS_STATES = {}
 
-basin.new_minute()
-basin.render()
+search(this_basin=basin)
 
-basin.new_minute()
-basin.render()
-
-basin.new_minute()
-basin.render()
-
-basin.new_minute()
-basin.render()
+print('Part 1:', LEAST_MINUTES)
+# basin.new_minute()
+# basin.render()
+#
+# basin.new_minute()
+# basin.render()
+#
+# basin.new_minute()
+# basin.render()
+#
+# basin.new_minute()
+# basin.render()
+#
+# basin.new_minute()
+# basin.render()
