@@ -2,7 +2,7 @@
 # https://adventofcode.com/2022/day/24
 
 import copy
-import json
+import random
 
 
 class Basin:
@@ -34,6 +34,13 @@ class Basin:
 
 
     def new_minute(self):
+        global PREVIOUS_BLIZZARDS
+
+        self.minute += 1
+        if self.minute in PREVIOUS_BLIZZARDS:
+            self.blizzards = PREVIOUS_BLIZZARDS[self.minute]
+            return
+
         old_blizzards = self.blizzards.copy()
 
         deltas = {'<': (-1, 0), '>': (1, 0), '^': (0, -1), 'v': (0, 1)}
@@ -59,7 +66,8 @@ class Basin:
                 else:
                     self.blizzards[(new_x, new_y)] = direction
 
-        self.minute += 1
+        PREVIOUS_BLIZZARDS[self.minute] = self.blizzards.copy()
+
 
     def render(self):
         print('minute:', self.minute)
@@ -102,6 +110,8 @@ class Basin:
 
             if (px, py) not in self.blizzards and 1 <= px <= self.right and 1 <= py <= self.bottom:
                 possible.append((x + dx, y + dy))
+
+        random.shuffle(possible)
         return possible
 
 
@@ -117,14 +127,14 @@ def search(this_basin: Basin):
     if this_basin.minute > 900:                 # Search too long, so give up.
         return
 
-    if this_basin.minute > 5 * this_basin.manhattan():
+    if this_basin.minute > 3.07 * this_basin.manhattan():
         return
 
-    hash = this_basin.hash_state()
-    if hash in PREVIOUS_STATES:
-        if PREVIOUS_STATES[hash] <= this_basin.minute:
-            return
-        PREVIOUS_STATES[hash] = this_basin.minute
+    # hash = this_basin.hash_state()
+    # if hash in PREVIOUS_STATES:
+    #     if PREVIOUS_STATES[hash] <= this_basin.minute:
+    #         return
+    #     PREVIOUS_STATES[hash] = this_basin.minute
 
     this_basin.new_minute()                     # Move the blizzards, and add 1 to the minute count.
 
@@ -153,6 +163,7 @@ basin.render()
 
 LEAST_MINUTES = 9999999
 PREVIOUS_STATES = {}
+PREVIOUS_BLIZZARDS = {}
 
 search(this_basin=basin)
 
