@@ -142,7 +142,7 @@ for minute in range(0, 350):
     for sx, sy in [HOME, GOAL]:
         dist[sx, sy, minute] = sys.maxsize
         prev[sx, sy, minute] = None
-        q[sx, sy, minute] = dist[sx, sy, minute]
+        # q[sx, sy, minute] = dist[sx, sy, minute]
 
     for y in range(1, BOTTOM + 1):
         for x in range(1, RIGHT + 1):
@@ -151,7 +151,7 @@ for minute in range(0, 350):
             # prev[v] ← UNDEFINED
             prev[(x, y, minute)] = None
             # add v to Q
-            q[(x, y, minute)] = dist[(x, y, minute)]
+            # q[(x, y, minute)] = dist[(x, y, minute)]
 
 # Add the GOAL location specifically, as it is outside of the nested loops above.
 
@@ -161,71 +161,74 @@ SOURCE = (hx, hy, 0)
 dist[SOURCE] = 0
 q[SOURCE] = 0
 
+completed = []
+
 # print(q)
 
 lowest = sys.maxsize
 
 # while Q is not empty:
 done = False
-while not done:
+while not done and len(q) != 0:
 
     len_q = len(q)
-    if len_q % 10 == 0:
-        print('len(q):', len(q), count_non_maxsize(q), lowest)
+    # if len_q % 10 == 0:
+    print('len(q):', len(q), count_non_maxsize(q), lowest)
 
     # u ← vertex in Q with min dist[u]
     u = min(q, key=q.get)
 
-    if q[u] == sys.maxsize:
-        done = True
+    # if q[u] == sys.maxsize:
+    #     done = True
 
-    else:
-        # print('u, q[u], dist[u]:', u, q[u], dist[u])
+    # print('u, q[u], dist[u]:', u, q[u], dist[u])
 
-        # remove u from Q
-        del q[u]
+    # remove u from Q
+    del q[u]
+    completed.append(u)
 
-        # for each neighbor v of u still in Q:
-        x, y, minute = u
+    # for each neighbor v of u still in Q:
+    x, y, minute = u
 
-        if minute < lowest:
+    if minute < lowest:
 
-            if (x, y) == GOAL:
-                lowest = min(lowest, minute)
+        if (x, y) == GOAL:
+            lowest = min(lowest, minute)
 
-            # print(x, y)
-            minute += 1
+        # print(x, y)
+        minute += 1
 
-            # render(exp_x=x, exp_y=y, minute=minute)
+        # render(exp_x=x, exp_y=y, minute=minute)
 
-            if minute < 350:
-                for v in possible_moves(exp_x=x, exp_y=y, minute=minute):
-                    # for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                    #     v = (x + dx, y + dy)
-                    #     climbable = False
-                    #     if v in grid:
-                    #         elevation = ord(grid[v]) - ord(grid[u])
-                    #         climbable = (elevation <= 1)
-                    #         # print(v, elevation)
-                    #
-                    #     # TODO v in q yes... but also, is there a path from u to v.
-                    #     if v in q and climbable:
-                            # print('v:', v)
+        if minute < 350:
+            for v in possible_moves(exp_x=x, exp_y=y, minute=minute):
+                # for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                #     v = (x + dx, y + dy)
+                #     climbable = False
+                #     if v in grid:
+                #         elevation = ord(grid[v]) - ord(grid[u])
+                #         climbable = (elevation <= 1)
+                #         # print(v, elevation)
+                #
+                #     # TODO v in q yes... but also, is there a path from u to v.
+                #     if v in q and climbable:
+                        # print('v:', v)
 
-                            # print(v)
-                            # alt ← dist[u] + length(u, v)
-                            # alt = dist[u] + grid[v]
-                            # XXX All edges are length one in this graph!!!
-                            alt = minute
+                        # print(v)
+                        # alt ← dist[u] + length(u, v)
+                        # alt = dist[u] + grid[v]
+                        # XXX All edges are length one in this graph!!!
+                        alt = minute
 
-                            # if alt < dist[v]:
-                            if alt < dist[v]:
-                                # dist[v] ← alt
-                                dist[v] = alt
-                                if v in q:
-                                    q[v] = alt
-                                # prev[v] ← u
-                                prev[v] = u
+                        # if alt < dist[v]:
+                        if alt < dist[v]:
+                            # dist[v] ← alt
+                            dist[v] = alt
+                            # if v in q:
+                            if v not in completed:
+                                q[v] = alt
+                            # prev[v] ← u
+                            prev[v] = u
 
 # return dist[], prev[]
 # print(dist[GOAL])
