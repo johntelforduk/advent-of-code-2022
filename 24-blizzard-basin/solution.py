@@ -172,8 +172,8 @@ done = False
 while not done and len(q) != 0:
 
     len_q = len(q)
-    # if len_q % 10 == 0:
-    print('len(q):', len(q), count_non_maxsize(q), lowest)
+    if len_q % 25 == 0:
+        print('len(q):', len(q), lowest)
 
     # u ← vertex in Q with min dist[u]
     u = min(q, key=q.get)
