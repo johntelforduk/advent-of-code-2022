@@ -119,122 +119,55 @@ t = f.read()
 f.close()
 
 setup(raw=t)
-# render(exp_x=1, exp_y=0, minute=0)
-# print(possible_moves(1, 0, 0))
-#
-# render(exp_x=1, exp_y=0, minute=1)
-# print(possible_moves(1, 0, 1))
-#
-# render(exp_x=1, exp_y=0, minute=2)
-# render(exp_x=1, exp_y=0, minute=3)
-# render(exp_x=1, exp_y=0, minute=4)
-# render(exp_x=1, exp_y=0, minute=5)
+q, dist, prev, completed, lowest = {}, {}, {}, [], sys.maxsize
 
-# Implemented pseudo code from, https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-# function Dijkstra(Graph, source):
-#
-# create vertex set Q
-q, dist, prev = {}, {}, {}
-# for each vertex v in Graph:
-
-# for v in grid:
 for minute in range(0, 350):
     for sx, sy in [HOME, GOAL]:
         dist[sx, sy, minute] = sys.maxsize
         prev[sx, sy, minute] = None
-        # q[sx, sy, minute] = dist[sx, sy, minute]
 
     for y in range(1, BOTTOM + 1):
         for x in range(1, RIGHT + 1):
-            # dist[v] ← INFINITY
             dist[(x, y, minute)] = sys.maxsize
-            # prev[v] ← UNDEFINED
             prev[(x, y, minute)] = None
-            # add v to Q
-            # q[(x, y, minute)] = dist[(x, y, minute)]
-
-# Add the GOAL location specifically, as it is outside of the nested loops above.
 
 hx, hy = HOME
 SOURCE = (hx, hy, 0)
-# dist[source] ← 0
 dist[SOURCE] = 0
 q[SOURCE] = 0
 
-completed = []
-
-# print(q)
-
-lowest = sys.maxsize
-
-# while Q is not empty:
-done = False
-while not done and len(q) != 0:
-
+while len(q) != 0:
     len_q = len(q)
     if len_q % 25 == 0:
-        print('len(q):', len(q), lowest)
+        print('len_q, lowest:', len(q), lowest)
 
     # u ← vertex in Q with min dist[u]
     u = min(q, key=q.get)
 
-    # if q[u] == sys.maxsize:
-    #     done = True
-
-    # print('u, q[u], dist[u]:', u, q[u], dist[u])
-
-    # remove u from Q
     del q[u]
     completed.append(u)
 
-    # for each neighbor v of u still in Q:
     x, y, minute = u
 
     if minute < lowest:
-
         if (x, y) == GOAL:
             lowest = min(lowest, minute)
 
-        # print(x, y)
         minute += 1
-
-        # render(exp_x=x, exp_y=y, minute=minute)
 
         if minute < 350:
             for v in possible_moves(exp_x=x, exp_y=y, minute=minute):
-                # for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                #     v = (x + dx, y + dy)
-                #     climbable = False
-                #     if v in grid:
-                #         elevation = ord(grid[v]) - ord(grid[u])
-                #         climbable = (elevation <= 1)
-                #         # print(v, elevation)
-                #
-                #     # TODO v in q yes... but also, is there a path from u to v.
-                #     if v in q and climbable:
-                        # print('v:', v)
+                alt = minute
 
-                        # print(v)
-                        # alt ← dist[u] + length(u, v)
-                        # alt = dist[u] + grid[v]
-                        # XXX All edges are length one in this graph!!!
-                        alt = minute
-
-                        # if alt < dist[v]:
-                        if alt < dist[v]:
-                            # dist[v] ← alt
-                            dist[v] = alt
-                            # if v in q:
-                            if v not in completed:
-                                q[v] = alt
-                            # prev[v] ← u
-                            prev[v] = u
-
-# return dist[], prev[]
-# print(dist[GOAL])
-
-
-# print(dist)
+                # if alt < dist[v]:
+                if alt < dist[v]:
+                    # dist[v] ← alt
+                    dist[v] = alt
+                    # if v in q:
+                    if v not in completed:
+                        q[v] = alt
+                    # prev[v] ← u
+                    prev[v] = u
 
 minute, part1 = 0, None
 gx, gy = GOAL
