@@ -95,7 +95,7 @@ def possible_moves(exp_x: int, exp_y: int, minute: int) -> list:
     """Return a list of possible (x, y) coordinates that expedition could move to next."""
     global HOME
     possible = []                                               # "...or you can wait in place."
-    for dx, dy in [(0, 0), (1, 0), (0, 1), (0, -1), (0, -1)]:   # "On each minute, you can move up, down, left, or right..."
+    for dx, dy in [(0, 0), (1, 0), (0, 1), (0, -1), (-1, 0)]:   # "On each minute, you can move up, down, left, or right..."
         px, py = exp_x + dx, exp_y + dy
         if (px, py) == GOAL:                            # Moving to goal is possible, so no other moves needed.
             return[(px, py, minute)]
